@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riemann Sum Convergence Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 28px;
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .canvas-container {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        canvas {
+            display: block;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #333;
+            min-width: 120px;
+        }
+        
+        .slider-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #e9ecef;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #764ba2;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        input[type="range"]::-moz-range-thumb:hover {
+            background: #764ba2;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+        
+        .n-value {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 40px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .value-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .value-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .value-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .error {
+            font-size: 14px;
+            color: #e74c3c;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .slider-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .slider-wrapper {
+                flex-direction: column;
+            }
+            
+            label {
+                min-width: auto;
+            }
+            
+            .values {
+                grid-template-columns: 1fr;
+            }
+            
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Riemann Sum Convergence</h1>
+        <p class="description">
+            Watch how the area of left-endpoint rectangles converges to the exact integral of f(x) = x² on [0,1] as the number of rectangles increases.
+        </p>
+        
+        <div class="canvas-container">
+            <canvas id="canvas" width="700" height="500"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="slider-group">
+                <label for="nSlider">Number of Rectangles:</label>
+                <div class="slider-wrapper">
+                    <input type="range" id="nSlider" min="1" max="50" value="5">
+                    <span class="n-value" id="nValue">5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="values">
+            <div class="value-box">
+                <div class="value-label">Approximation (Left-Endpoint)</div>
+                <div class="value-number" id="approximation">0.2700</div>
+                <div class="error" id="errorValue"></div>
+            </div>
+            <div class="value-box">
+                <div class="value-label">Exact Value</div>
+                <div class="value-number">0.3333</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const nSlider = document.getElementById('nSlider');
+        const nValue = document.getElementById('nValue');
+        const approximationDisplay = document.getElementById('approximation');
+        const errorValue = document.getElementById('errorValue');
+
+        // Constants
+        const exactValue = 1 / 3;
+        const padding = 60;
+        const graphWidth = canvas.width - 2 * padding;
+        const graphHeight = canvas.height - 2 * padding;
+
+        // Function to evaluate f(x) = x²
+        function f(x) {
+            return x * x;
+        }
+
+        // Calculate left-endpoint Riemann sum
+        function calculateRiemannSum(n) {
+            const width = 1 / n;
+            let sum = 0;
+            for (let i = 0; i < n; i++) {
+                const x = i * width;
+                sum += f(x) * width;
+            }
+            return sum;
+        }
+
+        // Convert canvas coordinates
+        function toCanvasX(x) {
+            return padding + x * graphWidth;
+        }
+
+        function toCanvasY(y) {
+            return canvas.height - padding - y * graphHeight;
+        }
+
+        // Draw grid
+        function drawGrid() {
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 1;
+
+            // Vertical grid lines
+            for (let i = 0; i <= 10; i++) {
+                const x = toCanvasX(i / 10);
+                ctx.beginPath();
+                ctx.moveTo(x, toCanvasY(0));
+                ctx.lineTo(x, toCanvasY(1));
+                ctx.stroke();
+            }
+
+            // Horizontal grid lines
+            for (let i = 0; i <= 10; i++) {
+                const y = i / 10;
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(0), toCanvasY(y));
+                ctx.lineTo(toCanvasX(1), toCanvasY(y));
+                ctx.stroke();
+            }
+        }
+
+        // Draw axes
+        function drawAxes() {
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.fillStyle = '#333';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, canvas.height - padding);
+            ctx.lineTo(padding, padding);
+            ctx.stroke();
+
+            // X-axis labels
+            for (let i = 0; i <= 10; i++) {
+                const x = i / 10;
+                const canvasX = toCanvasX(x);
+                ctx.beginPath();
+                ctx.moveTo(canvasX, canvas.height - padding);
+                ctx.lineTo(canvasX, canvas.height - padding + 5);
+                ctx.stroke();
+                ctx.fillText(x.toFixed(1), canvasX, canvas.height - padding + 20);
+            }
+
+            // Y-axis labels
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 10; i++) {
+                const y = i / 10;
+                const canvasY = toCanvasY(y);
+                ctx.beginPath();
+                ctx.moveTo(padding - 5, canvasY);
+                ctx.lineTo(padding, canvasY);
+                ctx.stroke();
+                ctx.fillText(y.toFixed(1), padding - 10, canvasY + 5);
+            }
+
+            // Axis labels
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('x', canvas.width - 30, canvas.height - padding + 30);
+            ctx.save();
+            ctx.translate(20, padding - 20);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = 'center';
+            ctx.fillText('f(x) = x²', 0, 0);
+            ctx.restore();
+        }
+
+        // Draw rectangles
+        function drawRectangles(n) {
+            const width = 1 / n;
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.4)';
+            ctx.strokeStyle = 'rgba(102, 126, 234, 0.8)';
+            ctx.lineWidth = 1.5;
+
+            for (let i = 0; i < n; i++) {
+                const x = i * width;
+                const height = f(x);
+
+                const x1 = toCanvasX(x);
+                const y1 = toCanvasY(0);
+                const rectWidth = (width * graphWidth);
+                const rectHeight = height * graphHeight;
+
+                ctx.fillRect(x1, y1 - rectHeight, rectWidth, rectHeight);
+                ctx.strokeRect(x1, y1 - rectHeight, rectWidth, rectHeight);
+            }
+        }
+
+        // Draw function curve
+        function drawCurve() {
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            const step = 0.01;
+            for (let x = 0; x <= 1; x += step) {
+                const y = f(x);
+                const canvasX = toCanvasX(x);
+                const canvasY = toCanvasY(y);
+
+                if (x === 0) {
+                    ctx.moveTo(canvasX, canvasY);
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+            ctx.stroke();
+        }
+
+        // Main draw function
+        function draw(n) {
+            // Clear canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw components
+            drawGrid();
+            drawRectangles(n);
+            drawCurve();
+            drawAxes();
+
+            // Calculate and display values
+            const approximation = calculateRiemannSum(n);
+            const error = Math.abs(approximation - exactValue);
+
+            approximationDisplay.textContent = approximation.toFixed(4);
+            errorValue.textContent = `Error: ${error.toFixed(4)}`;
+        }
+
+        // Event listener for slider
+        nSlider.addEventListener('input', (e) => {
+            const n = parseInt(e.target.value);
+            nValue.textContent = n;
+            draw(n);
+        });
+
+        // Initial draw
+        draw(5);
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+Slide 1: Trigonometric Identities
+
+Today we begin with trigonometric identities for precalculus students. We will explore how right triangles, the unit circle, and inverse trig functions connect, and we will learn how identities help solve equations and model repeating phenomena.
+
+Slide 2: Trigonometric Relationships in Right Triangles
+
+Trigonometry starts with a right triangle. For an acute angle theta, sine is opposite over hypotenuse, cosine is adjacent over hypotenuse, and tangent is opposite over adjacent. These ratios are the core definitions that relate angles to side lengths.
+
+Slide 3: Right-Triangle Definitions Explained
+
+Using a triangle with sides x, y, and r, we see that sin theta equals y over r, cos theta equals x over r, and tan theta equals y over x. The actual triangle can be scaled, but the ratios remain the same, so the functions are well-defined.
+
+Slide 4: The Unit Circle and Trigonometric Functions
+
+The unit circle is a circle of radius one around the origin. Each angle theta corresponds to a point on the circle whose coordinates are cos theta and sin theta. This geometric viewpoint extends trig functions beyond right triangles to any angle.
+
+Slide 5: Connecting Unit Circle and Right Triangles
+
+When we drop a perpendicular from a point on the unit circle to the x-axis, we form a right triangle with hypotenuse one. The horizontal leg equals cos theta and the vertical leg equals sin theta, which matches the standard triangle definitions for acute angles.
+
+Slide 6: Pythagorean Identities
+
+Because every point on the unit circle satisfies x squared plus y squared equals one, we get the core identity cos squared theta plus sin squared theta equals one. Dividing this identity by cos squared or sin squared gives the secant and cosecant forms that are useful in many calculations.
+
+Slide 7: Cofunction and Reciprocal Identities
+
+Cofunction identities relate sine and cosine by a ninety-degree shift: sine of pi over two minus theta equals cosine of theta. Reciprocal identities define secant as one over cosine, cosecant as one over sine, and cotangent as one over tangent.
+
+Slide 8: Inverse Trigonometric Functions
+
+Inverse trig functions let us recover an angle from a ratio. Arcsine and arccosine take values between minus one and one, while arctangent accepts any real number. The range for arcsine is negative pi over two to pi over two, and for arccosine it is zero to pi.
+
+Slide 9: Properties of Inverse Trig Functions
+
+The basic properties are that sine of arcsine x equals x, cosine of arccosine x equals x, and tangent of arctangent x equals x. However, arcsine of sine theta is not always theta, because the inverse returns a principal angle in the allowed range.
+
+Slide 10: Solving Trigonometric Equations
+
+We solve trig equations by using identities to rewrite expressions. For example, sin squared theta plus sin theta minus two equals zero factors into sin theta minus one times sin theta plus two. Only sin theta equals one is valid, giving theta equals pi over two plus multiples of two pi.
+
+Slide 11: Periodic Modeling with Trig Identities
+
+Sine and cosine are perfect models for periodic phenomena such as waves, motion, and cycles. The general form y equals A sine of B x minus C plus D captures amplitude, frequency, phase shift, and vertical shift. Identities help rewrite these models and simplify their analysis.
+
+Slide 12: Summary and Takeaways
+
+We reviewed right-triangle trig definitions, the unit circle, inverse trig properties, and how identities support equation solving and periodic modeling. Practice verifying basic identities and solving trig equations to deepen your understanding.
+

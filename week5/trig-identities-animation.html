@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trigonometric Identities Interactive Demo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 0; background: #f4f7fb; color: #111; }
+    .page { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; }
+    .panel { background: white; border-radius: 16px; box-shadow: 0 12px 28px rgba(0,0,0,.08); padding: 20px; }
+    h1, h2 { margin: 0 0 16px; }
+    .controls { display: grid; gap: 14px; }
+    .control label { display: flex; justify-content: space-between; gap: 12px; font-size: 0.95rem; }
+    .control input { width: 100%; }
+    .diagram { display: grid; place-items: center; min-height: 410px; }
+    .output { display: grid; gap: 10px; margin-top: 18px; }
+    .toolbox { display: grid; gap: 10px; margin-top: 24px; }
+    .output div { background: #eef2f7; border-radius: 10px; padding: 12px; font-family: monospace; }
+    .wave { width: 100%; height: 200px; background: #0d47a1; border-radius: 14px; position: relative; overflow: hidden; }
+    .wave path { fill: rgba(255,255,255,0.75); }
+    .footer { grid-column: 1 / -1; font-size: 0.9rem; color: #555; }
+    svg { width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="panel">
+      <h1>Trigonometric Identities Interactive Demo</h1>
+      <p>Explore the right-triangle definitions, the unit circle, Pythagorean identity, inverse trig, and periodic modeling.</p>
+      <div class="controls">
+        <div class="control"><label>Angle \(\theta\) (degrees): <span id="angleValue">45</span></label><input id="angle" type="range" min="0" max="360" step="1" value="45"></div>
+        <div class="control"><label>Amplitude \(A\): <span id="amplitudeValue">1</span></label><input id="amplitude" type="range" min="0.2" max="2" step="0.1" value="1"></div>
+        <div class="control"><label>Frequency \(B\): <span id="frequencyValue">1</span></label><input id="frequency" type="range" min="0.5" max="3" step="0.1" value="1"></div>
+      </div>
+      <div class="output">
+        <div>\(\sin\theta = <span id="sinVal"></span>\)</div>
+        <div>\(\cos\theta = <span id="cosVal"></span>\)</div>
+        <div>\(\tan\theta = <span id="tanVal"></span>\)</div>
+        <div>\(\sin^2\theta + \cos^2\theta = <span id="pythagorean"></span>\)</div>
+        <div>\(\theta = <span id="thetaRad"></span>\text{ radians}\)</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Waveform Model</h2>
+      <div class="wave" aria-label="Periodic modeling visualization">
+        <svg viewBox="0 0 480 200" preserveAspectRatio="none">
+          <path id="wavePath"></path>
+        </svg>
+      </div>
+      <div class="toolbox">
+        <div><strong>Model equation:</strong> \(y = A\sin(Bx)\)</div>
+        <div><strong>Current point:</strong> \(x = <span id="waveX">0</span>\), \(y = <span id="waveY"></span>\)</div>
+      </div>
+    </div>
+
+    <div class="panel diagram">
+      <svg id="unitCircle" viewBox="-120 -120 240 240" role="img" aria-label="Unit circle diagram">
+        <circle cx="0" cy="0" r="100" fill="#f7fbff" stroke="#1a73e8" stroke-width="3"></circle>
+        <line id="radius" x1="0" y1="0" x2="70" y2="-70" stroke="#0d47a1" stroke-width="3"></line>
+        <line id="adjLine" x1="0" y1="0" x2="70" y2="0" stroke="#ff5722" stroke-width="3"></line>
+        <line id="oppLine" x1="70" y1="0" x2="70" y2="-70" stroke="#009688" stroke-width="3"></line>
+        <circle id="pt" cx="70" cy="-70" r="6" fill="#d32f2f"></circle>
+        <line x1="0" y1="0" x2="100" y2="0" stroke="#777" stroke-dasharray="4 4"></line>
+        <path d="M 20 0 A 20 20 0 0 1 70 -70" fill="none" stroke="#1a237e" stroke-width="3"></path>
+        <text x="34" y="-6" font-size="12" fill="#1a237e">θ</text>
+        <text x="76" y="-6" font-size="12" fill="#d32f2f">(cos, sin)</text>
+        <text x="72" y="-35" font-size="12" fill="#009688">sin</text>
+        <text x="38" y="12" font-size="12" fill="#ff5722">cos</text>
+      </svg>
+      <div class="output">
+        <div><strong>Unit circle point:</strong> (<span id="ptX"></span>, <span id="ptY"></span>)</div>
+        <div><strong>Right triangle legs:</strong> adjacent = <span id="adjVal"></span>, opposite = <span id="oppVal"></span></div>
+        <div><strong>Inverse trig:</strong> \(\sin^{-1}(\sin\theta) = <span id="asinVal"></span>\)</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Use the angle slider to explore how sine, cosine, and tangent change around the circle. The waveform plot shows periodic behavior and the identity panel confirms the Pythagorean identity at every angle.
+    </div>
+  </div>
+
+  <script>
+    const angleInput = document.getElementById('angle');
+    const amplitudeInput = document.getElementById('amplitude');
+    const frequencyInput = document.getElementById('frequency');
+    const angleValue = document.getElementById('angleValue');
+    const amplitudeValue = document.getElementById('amplitudeValue');
+    const frequencyValue = document.getElementById('frequencyValue');
+    const sinVal = document.getElementById('sinVal');
+    const cosVal = document.getElementById('cosVal');
+    const tanVal = document.getElementById('tanVal');
+    const pythagorean = document.getElementById('pythagorean');
+    const thetaRad = document.getElementById('thetaRad');
+    const pt = document.getElementById('pt');
+    const radiusLine = document.getElementById('radius');
+    const adjLine = document.getElementById('adjLine');
+    const oppLine = document.getElementById('oppLine');
+    const ptX = document.getElementById('ptX');
+    const ptY = document.getElementById('ptY');
+    const adjVal = document.getElementById('adjVal');
+    const oppVal = document.getElementById('oppVal');
+    const asinVal = document.getElementById('asinVal');
+    const wavePath = document.getElementById('wavePath');
+    const waveX = document.getElementById('waveX');
+    const waveY = document.getElementById('waveY');
+
+    function toFixed(value) { return Number(value.toFixed(4)); }
+
+    function update() {
+      const angleDeg = Number(angleInput.value);
+      const theta = angleDeg * Math.PI / 180;
+      const s = Math.sin(theta);
+      const c = Math.cos(theta);
+      const t = Math.tan(theta);
+      angleValue.textContent = angleDeg;
+      amplitudeValue.textContent = amplitudeInput.value;
+      frequencyValue.textContent = frequencyInput.value;
+      sinVal.textContent = toFixed(s);
+      cosVal.textContent = toFixed(c);
+      tanVal.textContent = Math.abs(c) < 1e-6 ? 'undefined' : toFixed(t);
+      pythagorean.textContent = toFixed(s*s + c*c);
+      thetaRad.textContent = toFixed(theta);
+      pt.setAttribute('cx', 100 * c * 0.7);
+      pt.setAttribute('cy', -100 * s * 0.7);
+      radiusLine.setAttribute('x2', 100 * c * 0.7);
+      radiusLine.setAttribute('y2', -100 * s * 0.7);
+      adjLine.setAttribute('x2', 100 * c * 0.7);
+      oppLine.setAttribute('x1', 100 * c * 0.7);
+      oppLine.setAttribute('y1', 0);
+      oppLine.setAttribute('x2', 100 * c * 0.7);
+      oppLine.setAttribute('y2', -100 * s * 0.7);
+      ptX.textContent = toFixed(c);
+      ptY.textContent = toFixed(s);
+      adjVal.textContent = toFixed(c);
+      oppVal.textContent = toFixed(s);
+      const principalAsin = Math.asin(s);
+      asinVal.textContent = toFixed(principalAsin);
+      drawWave();
+    }
+
+    function drawWave() {
+      const A = Number(amplitudeInput.value);
+      const B = Number(frequencyInput.value);
+      const width = 480;
+      const height = 200;
+      const samples = 120;
+      const points = [];
+      for (let i = 0; i <= samples; i++) {
+        const x = i / samples * width;
+        const t = i / samples * 4 * Math.PI;
+        const y = height/2 - A * Math.sin(B * t) * 70;
+        points.push(`${x},${y}`);
+      }
+      const path = ['M', points[0], 'L', points.slice(1).join(' ')].join(' ');
+      wavePath.setAttribute('d', path);
+      const px = 0;
+      const py = height/2 - A * Math.sin(0) * 70;
+      waveX.textContent = 0;
+      waveY.textContent = toFixed(A * Math.sin(0));
+    }
+
+    angleInput.addEventListener('input', update);
+    amplitudeInput.addEventListener('input', update);
+    frequencyInput.addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
