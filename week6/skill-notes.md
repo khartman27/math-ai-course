@@ -1,0 +1,8 @@
+# Reduced-Order Modeling: Main Open Problems
+
+Reduced-order modeling remains an active and rapidly evolving area, but several open problems continue to limit its scope and reliability. A first major challenge is the lack of strong theoretical guarantees for nontraditional applications of DEIM and related methods. While classical error analysis is well developed for approximation in PDE-based settings, it is less clear how those guarantees translate to tasks such as classification, clustering, and data summarization, where the objective is not only to approximate a function but also to preserve interpretability and downstream predictive performance (Hendryx Lyons, 2024; Bukac et al., 2024). A second open problem concerns robustness and scalability. Existing methods can become unstable or computationally expensive when faced with noise, outliers, highly complex geometries, or very large datasets, especially in three-dimensional or strongly nonlinear regimes (Peherstorfer et al., 2013; Saibaba, 2020; Bonomi et al., 2016). In addition, many approaches still rely on expensive basis construction and interpolation steps, which can become bottlenecks for large-scale simulations. These gaps suggest a need for hybrid methods that combine localization, randomization, and learning-based adaptation to improve both accuracy and efficiency in modern reduced-order modeling.
+
+Open questions and gaps:
+- How can DEIM-style error bounds be extended to data-driven tasks such as classification and clustering?
+- How can reduced-order methods be made more robust to noise, outliers, and geometric complexity?
+- How can basis construction and interpolation remain efficient as problem size and dimensionality increase?
